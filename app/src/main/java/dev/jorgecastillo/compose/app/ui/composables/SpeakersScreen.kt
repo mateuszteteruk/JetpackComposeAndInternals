@@ -40,12 +40,68 @@ import dev.jorgecastillo.compose.app.ui.theme.ComposeAndInternalsTheme
 
 @Composable
 fun SpeakersScreen(speakers: List<Speaker>) {
-
+    Scaffold(
+        topBar = {
+            TopAppBar(title = { Text(text = "Speakers") })
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { /*TODO*/ }) {
+                Icon(
+                    painter = rememberVectorPainter(image = Icons.Default.Add),
+                    contentDescription = stringResource(id = R.string.content_desc_fab_add_speaker),
+                )
+            }
+        }
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
+                .testTag("SpeakersList")
+        ) {
+            for (speaker in speakers) {
+                SpeakerCard(speaker = speaker)
+            }
+        }
+    }
 }
 
 @Composable
 fun SpeakerCard(speaker: Speaker, onClick: (Speaker) -> Unit = {}) {
-    
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(dimensionResource(id = R.dimen.spacing_small)),
+        onClick = { onClick(speaker) }
+    ) {
+        Row(
+            modifier = Modifier.padding(dimensionResource(id = R.dimen.spacing_regular))
+        ) {
+            Image(
+                modifier = Modifier
+                    .size(dimensionResource(id = R.dimen.avatar_size))
+                    .clip(CircleShape),
+                painter = painterResource(id = avatarResForId(id = speaker.id)),
+                contentScale = ContentScale.Crop,
+                contentDescription = stringResource(
+                    id = R.string.content_desc_speaker_avatar,
+                    speaker.name
+                ),
+            )
+            Column(
+                modifier = Modifier.padding(dimensionResource(id = R.dimen.spacing_regular))
+            ) {
+                Text(
+                    text = speaker.name,
+                    style = MaterialTheme.typography.h6,
+                )
+                Text(
+                    text = speaker.company,
+                    style = MaterialTheme.typography.caption,
+                )
+            }
+        }
+    }
 }
 
 @SuppressLint("DiscouragedApi")
